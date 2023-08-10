@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>HI</h1>
+    <form action="">
+        <input type="text" id="name">
+        <input type="text" id="email">
+        <input type="submit">
+    </form>
+    <div id="parent"></div>
+</body>
+<script>
+    const nameinp=document.getElementById("name")
+    const emailinp=document.getElementById("email")
+    const formel=document.querySelector('form')
+    const boxel=document.getElementById("parent")
+    formel.addEventListener('submit',(e)=>{
+        e.preventDefault()
+        let obj={
+            name:nameinp.value,
+            email:emailinp.value
+        }
+        fetch("http://localhost:8000/crud/create",{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify(obj)
+        })
+        .then((res)=>{
+            return res.json()
+        })
+        .then((data)=>{
+            console.log(data)
+            fetchAndRender()
+        })
+        .catch((err)=>{
+            console.log(err)
+        })
+    })
+    fetchAndRender()
+    function fetchAndRender(){
+        fetch("http://localhost:8000/crud/get")
+        .then((res)=>{
+            return res.json()
+        })
+        .then((data)=>{
+            console.log(data)
+            display(data.data)
+        })
+        .catch((err)=>{
+            console.log(err)
+        })
+    }
+    function display(data){
+        boxel.innerHTML=""
+        data.map((el)=>{
+            const nameel=document.createElement("h1")
+            nameel.innerText=el.name
+            const emailel=document.createElement("h1")
+            emailel.innerText=el.email
+            boxel.append(nameel,emailel)
+        })
+    }
+</script>
+</html>
