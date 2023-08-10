@@ -10,9 +10,8 @@ function DisplayData() {
 }
 DisplayData()
 function fetchAndRender(data) {
-
+    container.innerHTML = ""
     data.forEach((ele) => {
-        container.innerHTML = ""
         const div = document.createElement("div")
         div.classList.add("newdiv")
         let id = document.createElement("p")
@@ -25,8 +24,45 @@ function fetchAndRender(data) {
         available.innerText = `AVAILABLITY : ${ele.available}`
         let deletebutton=document.createElement('button')
         deletebutton.innerText="Delete"
-
-        div.append(id, dishname, price, available)
+        let updatebutton=document.createElement('button')
+        updatebutton.innerText="Update"
+        deletebutton.addEventListener('click',()=>{
+            fetch("https://test-app-3ece.onrender.com/crud/delete",{
+                method:"DELETE",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify({id:ele.id})
+            })
+            .then((res)=>{
+                return res.json()
+            })
+            .then((data)=>{
+                DisplayData()
+            })
+            .catch((err)=>{
+                console.log(err)
+            })
+        })
+        updatebutton.addEventListener('click',()=>{
+            fetch("https://test-app-3ece.onrender.com/crud/update",{
+                method:"PATCH",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify({id:ele.id})
+            })
+            .then((res)=>{
+                return res.json()
+            })
+            .then((data)=>{
+                DisplayData()
+            })
+            .catch((err)=>{
+                console.log(err)
+            })
+        })
+        div.append(id, dishname, price, available,deletebutton,updatebutton)
         container.append(div)
 
     });
